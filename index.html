@@ -40,27 +40,36 @@
     </ul>
 
     <script>
+
         const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
         const pantryList = document.getElementById('pantry-list');
 
-        pantryItems.forEach(item => {
-            const li = document.createElement('li');
+        function render(){
+            // sort pantry Item by expiry-date, most recent first
+            pantryItems.sort((a, b) => {
+                return new Date(a.expiryDate) - new Date(b.expiryDate);
+            });
 
-            const daysLeft = Math.floor((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
-            if (daysLeft < 0) {
-                li.classList.add('expired');
-            }
-            if (daysLeft < 3 && daysLeft >= 0) {
-                li.classList.add('expiring');
-            }
-            li.textContent = `${item.name} (${daysLeft}d)\t`;
-            // add a delete button 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = "🗑";
-            li.appendChild(deleteButton);
+            pantryItems.forEach(item => {
+                const li = document.createElement('li');
 
-            pantryList.appendChild(li);
-        });
+                const daysLeft = Math.floor((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                if (daysLeft < 0) {
+                    li.classList.add('expired');
+                }
+                if (daysLeft < 3 && daysLeft >= 0) {
+                    li.classList.add('expiring');
+                }
+                li.textContent = `${item.name} (${daysLeft}d)\t`;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = "🗑";
+                li.appendChild(deleteButton);
+
+                pantryList.appendChild(li);
+            });
+
+        }
 
         const addButton = document.getElementById('add-button');
         addButton.addEventListener('click', () => {
@@ -73,10 +82,7 @@
             }
             pantryItems.push(item);
             localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
-
-            const li = document.createElement('li');
-            li.textContent = item
-            pantryList.appendChild(li);
+            render();
         });
 
         pantryList.addEventListener('click', (event) => {
@@ -92,6 +98,8 @@
                 event.target.parentNode.remove();
             }
         });
+
+        render();
     </script>
 </body>
 </html>
