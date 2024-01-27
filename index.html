@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantry PWA</title>
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        ul {
+            list-style-type: none;
+        }
+        li {
+            margin: 10px 0;
+        }
+        li.expired {
+            color: red;
+            font-weight: bold;
+        }
+        li.expiring {
+            color: orange;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Pantry</h1>
+    <form id="add-form">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name">
+        <label for="expiry-date">Expiry Date</label>
+        <input type="date" id="expiry-date" name="expiry-date">
+        <button id="add-button">Add</button>
+    </form>
+    <ul id="pantry-list">
+        <!-- Items will be dynamically inserted here -->
+    </ul>
+    <!-- A form that ask for a name and an expiry date, use a date picker -->
+
+    
+
+
+    <script>
+        // load the items from localstorage
+
+        const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
+        const pantryList = document.getElementById('pantry-list');
+
+        pantryItems.forEach(item => {
+            const li = document.createElement('li');
+
+            const daysLeft = Math.floor((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+            if (daysLeft < 0) {
+                li.classList.add('expired');
+            }
+            if (daysLeft < 3 && daysLeft >= 0) {
+                li.classList.add('expiring');
+            }
+            li.textContent = `${item.name} (${daysLeft}d)`;
+            pantryList.appendChild(li);
+        });
+
+        const addButton = document.getElementById('add-button');
+        addButton.addEventListener('click', () => {
+            // Add the item to the local storage and re-render
+            const name = document.getElementById('name').value;
+            const expiryDate = document.getElementById('expiry-date').value;
+            const item = {
+                name,
+                expiryDate
+            }
+            pantryItems.push(item);
+            localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
+
+            const li = document.createElement('li');
+            li.textContent = item
+            pantryList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
