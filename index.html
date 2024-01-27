@@ -51,11 +51,11 @@
             pantryItems.forEach(item => {
                 const li = document.createElement('li');
 
-                const daysLeft = Math.floor((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
-                if (daysLeft < 0) {
+                const daysLeft = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+                if (daysLeft <= 0) {
                     li.classList.add('expired');
                 }
-                if (daysLeft < 3 && daysLeft >= 0) {
+                if (daysLeft < 3 && daysLeft > 0) {
                     li.classList.add('expiring');
                 }
                 li.textContent = `${item.name} (${daysLeft}d)\t`;
@@ -78,6 +78,10 @@
             }
             pantryItems.push(item);
             localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
+
+            document.getElementById('name').value = '';
+            document.getElementById('expiry-date').value = '';
+
             render();
         });
 
