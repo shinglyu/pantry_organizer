@@ -32,8 +32,6 @@
         <br/>
         <label for="expiry-date">Expiry Date</label>
         <input type="date" id="expiry-date" name="expiry-date">
-        <br/>
-        <button id="add-button">Add</button>
     </form>
     <ul id="pantry-list">
         <!-- Items will be dynamically inserted here -->
@@ -45,7 +43,7 @@
         const pantryList = document.getElementById('pantry-list');
 
         function render(){
-            // sort pantry Item by expiry-date, most recent first
+            pantryList.innerHTML = '';
             pantryItems.sort((a, b) => {
                 return new Date(a.expiryDate) - new Date(b.expiryDate);
             });
@@ -71,9 +69,7 @@
 
         }
 
-        const addButton = document.getElementById('add-button');
-        addButton.addEventListener('click', () => {
-            // Add the item to the local storage and re-render
+        document.getElementById('expiry-date').addEventListener('change', () => {
             const name = document.getElementById('name').value;
             const expiryDate = document.getElementById('expiry-date').value;
             const item = {
@@ -92,7 +88,6 @@
                     return;
                 }
                 const index = Array.from(pantryList.children).indexOf(event.target.parentNode);
-                console.log(index);
                 pantryItems.splice(index, 1);
                 localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
                 event.target.parentNode.remove();
