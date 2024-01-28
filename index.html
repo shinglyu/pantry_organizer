@@ -42,12 +42,16 @@
     <ul id="pantry-list">
         <!-- Items will be dynamically inserted here -->
     </ul>
+    <br>
+    <button id="export">Export</button>
+    <button id="import">Import</button>
 
     <script>
-        const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
+        let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
         const pantryList = document.getElementById('pantry-list');
 
         function render(){
+            let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
             pantryList.innerHTML = '';
             pantryItems.sort((a, b) => {
                 return new Date(a.expiryDate) - new Date(b.expiryDate);
@@ -138,6 +142,43 @@
 
 
         render();
+
+        // Export and Import
+        // When the export button is clicked, download the pantryItems as a json file
+        document.getElementById('export').addEventListener('click', () => {
+            const pantryItemsJson = JSON.stringify(pantryItems);
+            const blob = new Blob([pantryItemsJson], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            // set the filename to pantry-export-<date>.json
+            const date = new Date().toISOString().split('T')[0];
+            a.download = `pantry-export-${date}.json`;
+            a.click();
+        });
+
+        // When the import button is clicked, open a file picker and let the user select a json file, then import it into the pantryItems and save to localstorage
+        document.getElementById('import').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.click();
+            input.addEventListener('change', () => {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.readAsText(file);
+                reader.addEventListener('load', () => {
+                    const importedPantryItems = JSON.parse(reader.result);
+                    // Ask if I want to overwrite the existing pantry items
+                    const confirmMerge = confirm('Do you want to keep existing items? Select YES to merge the imported items with the existing items, or NO to overwrite the existing items with the imported items.');
+                    const newPantryItems = confirmMerge ? importedPantryItems.concat(pantryItems) : importedPantryItems;
+                    
+                    localStorage.setItem('pantryItems', JSON.stringify(newPantryItems));
+                    render();
+                });
+            });
+        });
+
     </script>
 </body>
 </html>
