@@ -87,6 +87,11 @@
             });
 
         }
+        // focus the auto date input when name changes
+        document.getElementById('name').addEventListener('change', () => {
+            document.getElementById('expiry-date-text').focus();
+        });
+
         document.getElementById('expiry-date-text').addEventListener('change', () => {
             const name = document.getElementById('name').value;
             const expiryDateText = document.getElementById('expiry-date-text').value;
@@ -109,7 +114,9 @@
             localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
 
             document.getElementById('name').value = '';
+            document.getElementById('expiry-date-text').value = '';
             document.getElementById('expiry-date').value = '';
+
 
             render();
             // focus on the name input for smooth adding of items
