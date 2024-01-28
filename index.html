@@ -98,6 +98,8 @@
             document.getElementById('expiry-date').value = '';
 
             render();
+            // focus on the name input for smooth adding of items
+            document.getElementById('name').focus();
         });
 
         pantryList.addEventListener('click', (event) => {
