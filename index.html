@@ -22,20 +22,15 @@
         li.expiring {
             color: orange;
         }
-        #name,#expiry-date {
-          height: 36px;
-        }
     </style>
 </head>
 <body>
     <h1>My Pantry</h1>
-    <form id="add-form">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name">
-        <br/>
-        <label for="expiry-date">Expiry Date</label>
-        <input type="date" id="expiry-date" name="expiry-date">
-    </form>
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name">
+    <br>
+    <label for="expiry-date">Expiry Date</label>
+    <input type="date" id="expiry-date" name="expiry-date">
     <ul id="pantry-list">
         <!-- Items will be dynamically inserted here -->
     </ul>
@@ -61,7 +56,21 @@
                 if (daysLeft < 7 && daysLeft > 3) {
                     li.classList.add('expiring');
                 }
-                li.textContent = `${item.name} (${daysLeft}d)\t`;
+                // format the days left to months if it's more than 2 weeks, to years if it's more than a year
+                let relativeTime = `(${daysLeft}d)`
+                if (daysLeft > 14) {
+                    const weeksLeft = Math.floor(daysLeft / 7);
+                    const monthsLeft = Math.floor(daysLeft / 30);
+                    if (monthsLeft > 12) {
+                        const yearsLeft = Math.floor(monthsLeft / 12);
+                        relativeTime = `(${yearsLeft}y)`;
+                    } else if (monthsLeft >= 1) {
+                        relativeTime = `(${monthsLeft}m)`;
+                    } else {
+                        relativeTime = `(${weeksLeft}w)`;
+                    }
+                }
+                li.textContent = `${item.name} ${relativeTime} `;
 
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = "🗑";
@@ -100,6 +109,7 @@
                 event.target.parentNode.remove();
             }
         });
+
 
         render();
     </script>
