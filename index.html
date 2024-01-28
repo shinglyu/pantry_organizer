@@ -95,7 +95,7 @@
         document.getElementById('expiry-date-text').addEventListener('change', () => {
             const name = document.getElementById('name').value;
             const expiryDateText = document.getElementById('expiry-date-text').value;
-            const [year, month, day] = expiryDateText.split(/年|月|日/);
+            const [year, month, day] = expiryDateText.split(/年|月|日|號/);
             const expiryDate = new Date(year, month - 1, day, 1, 0, 0, 0); // Need to be 1am to avoid timezone issues
             console.log(expiryDate)
             document.getElementById('expiry-date').valueAsDate = expiryDate;
