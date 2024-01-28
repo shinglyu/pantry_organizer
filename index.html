@@ -29,17 +29,21 @@
 </head>
 <body>
     <h1>My Pantry</h1>
-    <label for="name">Name</label>
     <input type="text" id="name" name="name">
+    <label for="name">Name</label>
     <br>
-    <label for="expiry-date">Expiry Date</label>
+    <input type="text" id="expiry-date-text" name="expiry-date-text" placeholder="e.g. 2024年1月1日">
+    <label for="expiry-date-text">Expiry Date</label>
+    <br>
     <input type="date" id="expiry-date" name="expiry-date">
+    <label for="expiry-date">Expiry Date (manual)</label>
+    <br>
+    <small>Item will be added automatically when a expiry date is picked. Input the date in natural language in the auto field (works great for voice typing), or manually pick the date using the manual date picker.</small>
     <ul id="pantry-list">
         <!-- Items will be dynamically inserted here -->
     </ul>
 
     <script>
-
         const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
         const pantryList = document.getElementById('pantry-list');
 
@@ -83,10 +87,20 @@
             });
 
         }
+        document.getElementById('expiry-date-text').addEventListener('change', () => {
+            const name = document.getElementById('name').value;
+            const expiryDateText = document.getElementById('expiry-date-text').value;
+            const [year, month, day] = expiryDateText.split(/年|月|日/);
+            const expiryDate = new Date(year, month - 1, day, 1, 0, 0, 0); // Need to be 1am to avoid timezone issues
+            console.log(expiryDate)
+            document.getElementById('expiry-date').valueAsDate = expiryDate;
+            document.getElementById('expiry-date').dispatchEvent(new Event('change'));
+        });
 
         document.getElementById('expiry-date').addEventListener('change', () => {
             const name = document.getElementById('name').value;
             const expiryDate = document.getElementById('expiry-date').value;
+            console.log(new Date(expiryDate))
             const item = {
                 name,
                 expiryDate
