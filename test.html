@@ -42,6 +42,7 @@
             // Backup localStorage before all tests
             localStorageBackup = localStorage.getItem('pantryItems');
             localStorage.clear();
+            window.alert = function() {}; // Suppress alert
         });
 
         after(function() {
@@ -68,6 +69,12 @@
                 addPantryItem('apple', '2025-01-01').should.equal(0);
                 addPantryItem('banana', '2024-01-01').should.equal(0);
                 addPantryItem('pear', '2026-01-01').should.equal(2);
+            });
+            it('ignores invalid date', function() {
+                localStorage.clear();
+                localStorage.setItem('pantryItems', '[]')
+                addPantryItem('apple', 'NaN')
+                localStorage.getItem('pantryItems').should.equal('[]')
             });
         });
         describe('removePantryItem', function() {

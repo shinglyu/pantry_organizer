@@ -58,6 +58,13 @@ function addPantryItem(name, expiryDate) {
         name,
         expiryDate
     }
+
+    const expiryDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!expiryDateRegex.test(expiryDate)) {
+        alert(`Expiry date format ${expiryDate} is invalid`);
+        return;
+    }
+
     const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
     pantryItems.push(item);
     pantryItems.sort((a, b) => {
