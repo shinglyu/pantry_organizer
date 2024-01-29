@@ -74,6 +74,20 @@ function removePantryItem(index) {
 }
 
 function parseQuickAdd(text) {
+    // Match the text against the regex "<text><number>天", if match, use the number as relative date
+    const relativeDateRegex = /(.+)(\d+)天/;
+    const relativeDateMatch = text.match(relativeDateRegex);
+    if (relativeDateMatch) {
+        const name = relativeDateMatch[1];
+        const daysLeft = relativeDateMatch[2];
+        const expiryDateObject = new Date(new Date().getTime() + daysLeft * 24 * 60 * 60 * 1000);
+        const expiryDate = `${expiryDateObject.getFullYear()}-${(expiryDateObject.getMonth() + 1).toString().padStart(2, '0')}-${expiryDateObject.getDate().toString().padStart(2, '0')}`;
+        return {
+            name,
+            expiryDate
+        }
+    }
+
     // split from the first '2' from the left. Assuming this app will only be used until year 3000
     const name = text.split('2')[0];
     const expiryDateText = '2' + text.split('2').slice(1).join('2');

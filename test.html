@@ -111,6 +111,15 @@
                     {name: '', expiryDate: '2025-01-01'}
                 )
             });
+            it('works with relative days', function() {
+                const parsedItem = parseQuickAdd('蘋果7天')
+                const date7DaysFromNow = new Date()
+                date7DaysFromNow.setDate(date7DaysFromNow.getDate() + 7)
+                const expectedDate = date7DaysFromNow.toISOString().split('T')[0]
+                parsedItem.should.deep.equal(
+                    {name: '蘋果', expiryDate: expectedDate}
+                )
+            });
         });
         chai.should();
         mocha.run();
