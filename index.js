@@ -39,11 +39,11 @@ function render(){
                 relativeTime = `(${weeksLeft}w)`;
             }
         }
-        li.textContent = `${item.name} ${relativeTime} `;
+        li.textContent = ` ${item.name} ${relativeTime}`;
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = "🗑";
-        li.appendChild(deleteButton);
+        li.prepend(deleteButton);
 
         pantryList.appendChild(li);
     });
