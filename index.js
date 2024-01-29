@@ -157,7 +157,7 @@ render();
 // Export and Import
 // When the export button is clicked, download the pantryItems as a json file
 document.getElementById('export').addEventListener('click', () => {
-    const pantryItemsJson = JSON.stringify(pantryItems);
+    let pantryItemsJson = localStorage.getItem('pantryItems');
     const blob = new Blob([pantryItemsJson], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -182,6 +182,7 @@ document.getElementById('import').addEventListener('click', () => {
             const importedPantryItems = JSON.parse(reader.result);
             // Ask if I want to overwrite the existing pantry items
             const confirmMerge = confirm('Do you want to keep existing items? Select YES to merge the imported items with the existing items, or NO to overwrite the existing items with the imported items.');
+            const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
             const newPantryItems = confirmMerge ? importedPantryItems.concat(pantryItems) : importedPantryItems;
             
             localStorage.setItem('pantryItems', JSON.stringify(newPantryItems));
