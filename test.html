@@ -1,0 +1,40 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.4.0/mocha.min.css" />
+</head>
+<body>
+    <div id="mocha"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.4.0/mocha.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.4/chai.min.js"></script>
+    <script>mocha.setup('bdd')</script>
+
+    <!-- Include your test files here -->
+    <script src="index.js"></script>
+
+    <script>
+        // Write a test case for the function `addPantryItem`
+        localStorage.clear();
+
+        describe('addPantryItem', function() {
+            it('should add an item to the pantry', function() {
+                localStorage.clear();
+                addPantryItem('apple', '2025-01-01');
+                localStorage.getItem('pantryItems').should.equal('[{"name":"apple","expiryDate":"2025-01-01"}]');
+            });
+        });
+        describe('removePantryItem', function() {
+            it('should remove an item from the pantry', function() {
+                localStorage.clear();
+                localStorage.setItem('pantryItems', '[{"name":"apple","expiryDate":"2025-01-01"}]');
+                removePantryItem(0);
+                localStorage.getItem('pantryItems').should.equal('[]')
+            });
+        });
+        chai.should();
+        mocha.run();
+    </script>
+</body>
+</html>
