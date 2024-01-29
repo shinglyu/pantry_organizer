@@ -15,14 +15,32 @@
     <script src="index.js"></script>
 
     <script>
-        // Write a test case for the function `addPantryItem`
-        localStorage.clear();
+        let localStorageBackup = null;
+
+        before(function() {
+            // Backup localStorage before all tests
+            localStorageBackup = localStorage.getItem('pantryItems');
+            localStorage.clear();
+        });
+
+        after(function() {
+            // Restore localStorage after all tests
+            localStorage.setItem('pantryItems', localStorageBackup);
+        });
 
         describe('addPantryItem', function() {
             it('should add an item to the pantry', function() {
                 localStorage.clear();
                 addPantryItem('apple', '2025-01-01');
                 localStorage.getItem('pantryItems').should.equal('[{"name":"apple","expiryDate":"2025-01-01"}]');
+            });
+            it('Add the item to the pantry, ordered by the expiary date', function() {
+                localStorage.clear();
+                addPantryItem('apple', '2025-01-01');
+                addPantryItem('banana', '2024-03-12');
+                localStorage.getItem('pantryItems').should.equal(
+                    '[{"name":"banana","expiryDate":"2024-03-12"},{"name":"apple","expiryDate":"2025-01-01"}]'
+                );
             });
         });
         describe('removePantryItem', function() {

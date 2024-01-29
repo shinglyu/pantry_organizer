@@ -1,4 +1,3 @@
-let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
 const pantryList = document.getElementById('pantry-list');
 
 function render(){
@@ -49,6 +48,9 @@ function addPantryItem(name, expiryDate) {
     }
     const pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
     pantryItems.push(item);
+    pantryItems.sort((a, b) => {
+        return new Date(a.expiryDate) - new Date(b.expiryDate);
+    });
     localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
 }
 
