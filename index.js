@@ -75,7 +75,7 @@ function removePantryItem(index) {
 
 function parseQuickAdd(text) {
     // Match the text against the regex "<text><number>天", if match, use the number as relative date
-    const relativeDateRegex = /(.+)(\d+)天/;
+    const relativeDateRegex = /([^\d]+)(\d+)天/;
     const relativeDateMatch = text.match(relativeDateRegex);
     if (relativeDateMatch) {
         const name = relativeDateMatch[1];

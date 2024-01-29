@@ -116,6 +116,17 @@
                 const date7DaysFromNow = new Date()
                 date7DaysFromNow.setDate(date7DaysFromNow.getDate() + 7)
                 const expectedDate = date7DaysFromNow.toISOString().split('T')[0]
+                console.log(parsedItem)
+                parsedItem.should.deep.equal(
+                    {name: '蘋果', expiryDate: expectedDate}
+                )
+            });
+            it('works with relative days, two digits', function() {
+                const parsedItem = parseQuickAdd('蘋果30天')
+                console.log(parsedItem)
+                const date7DaysFromNow = new Date()
+                date7DaysFromNow.setDate(date7DaysFromNow.getDate() + 30)
+                const expectedDate = date7DaysFromNow.toISOString().split('T')[0]
                 parsedItem.should.deep.equal(
                     {name: '蘋果', expiryDate: expectedDate}
                 )
