@@ -1,6 +1,6 @@
 const pantryList = document.getElementById('pantry-list');
 
-function render(){
+function render(highlightIndex) {
     let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
     const originalPantryItems = [...pantryItems]; // Create a copy of the original array
     // sort the pantryItems by expiry date
@@ -15,7 +15,7 @@ function render(){
     }
 
     pantryList.innerHTML = '';
-    pantryItems.forEach(item => {
+    pantryItems.forEach((item, index) => {
         const li = document.createElement('li');
 
         const daysLeft = Math.ceil((new Date(item.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
@@ -45,6 +45,10 @@ function render(){
         deleteButton.textContent = "🗑";
         li.prepend(deleteButton);
 
+        if (index === highlightIndex) {
+            li.classList.add('highlight');
+        }
+
         pantryList.appendChild(li);
     });
 }
@@ -60,6 +64,7 @@ function addPantryItem(name, expiryDate) {
         return new Date(a.expiryDate) - new Date(b.expiryDate);
     });
     localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
+    return pantryItems.indexOf(item);
 }
 
 function removePantryItem(index) {
@@ -84,31 +89,31 @@ function parseQuickAdd(text) {
 }
 
 // UI listeners
-document.getElementById('name').addEventListener('change', () => {
-    document.getElementById('expiry-date-text').focus();
-});
-
 document.getElementById('quick-add').addEventListener('change', () => {
     const quickAddElement = document.getElementById('quick-add');
     const newItem = parseQuickAdd(quickAddElement.value);
-    addPantryItem(newItem.name, newItem.expiryDate);
-    render();
+    const highlightIndex = addPantryItem(newItem.name, newItem.expiryDate);
+    render(highlightIndex);
 
     quickAddElement.value = '';
+    // Focuc back to the quickAdd
     quickAddElement.focus();
+});
+
+document.getElementById('name').addEventListener('change', () => {
+    document.getElementById('expiry-date').focus();
 });
 
 document.getElementById('expiry-date').addEventListener('change', () => {
     const name = document.getElementById('name').value;
     const expiryDate = document.getElementById('expiry-date').value;
-    addPantryItem(name, expiryDate);
+    const highlightIndex = addPantryItem(name, expiryDate);
+
+    render(highlightIndex);
 
     document.getElementById('name').value = '';
     document.getElementById('quick-add').value = '';
     document.getElementById('expiry-date').value = '';
-
-
-    render();
     // focus on the name input for smooth adding of items
     document.getElementById('name').focus();
 });

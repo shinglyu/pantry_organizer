@@ -7,24 +7,26 @@
 <body>
     <div id="mocha"></div>
     <hr>
+
+    <!-- Test UI-->
     <h1>My Pantry</h1>
+    <input type="text" id="quick-add" name="quick-add" placeholder="e.g. 蘋果2024年1月1日">
+    <label for="quick-add">Quick Add</label>
+    <br>
+    <small>Input the name and expiry date in natural language (works great for voice typing) above, then tap anywhere outside the text input. Or manually input the name and date below.</small>
+    <br>
     <input type="text" id="name" name="name">
     <label for="name">Name</label>
-    <br>
-    <input type="text" id="expiry-date-text" name="expiry-date-text" placeholder="e.g. 2024年1月1日">
-    <label for="expiry-date-text">Expiry Date</label>
-    <br>
     <input type="date" id="expiry-date" name="expiry-date">
     <label for="expiry-date">Expiry Date (manual)</label>
     <br>
-    <small>Item will be added automatically when a expiry date is picked. Input the date in natural language in the auto field (works great for voice typing), or manually pick the date using the manual date picker.</small>
     <ul id="pantry-list">
         <!-- Items will be dynamically inserted here -->
     </ul>
     <br>
     <button id="export">Export</button>
     <button id="import">Import</button>
-
+    <!-- End of Test UI-->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/8.4.0/mocha.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.3.4/chai.min.js"></script>
@@ -61,6 +63,12 @@
                     '[{"name":"banana","expiryDate":"2024-03-12"},{"name":"apple","expiryDate":"2025-01-01"}]'
                 );
             });
+            it('returns the index of newly created item for highlighting', function() {
+                localStorage.clear();
+                addPantryItem('apple', '2025-01-01').should.equal(0);
+                addPantryItem('banana', '2024-01-01').should.equal(0);
+                addPantryItem('pear', '2026-01-01').should.equal(2);
+            });
         });
         describe('removePantryItem', function() {
             it('should remove an item from the pantry', function() {
@@ -79,6 +87,15 @@
                 )
                 render()
                 localStorage.getItem('pantryItems').should.equal('[{"name":"banana","expiryDate":"2024-03-12"},{"name":"apple","expiryDate":"2025-01-01"}]')
+            });
+            it('should highlight the item index specified in the parameter', function() {
+                localStorage.clear();
+                localStorage.setItem('pantryItems', 
+                    '[{"name":"banana","expiryDate":"2024-03-12"},{"name":"apple","expiryDate":"2025-01-01"}]'
+                )
+                render(1)
+                // nth-child is 1-indexed
+                document.querySelector('#pantry-list li:nth-child(2)').classList.contains('highlight').should.equal(true)
             });
         });
         describe('parseQuickAdd', function() {
