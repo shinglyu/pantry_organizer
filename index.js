@@ -68,19 +68,34 @@ function removePantryItem(index) {
     localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
 }
 
+function parseQuickAdd(text) {
+    // split from the first '2' from the left. Assuming this app will only be used until year 3000
+    const name = text.split('2')[0];
+    const expiryDateText = '2' + text.split('2').slice(1).join('2');
+    const [year, month, day] = expiryDateText.split(/年|月|日|號/);
+    const expiryDateObject = new Date(year, month - 1, day, 1, 0, 0, 0); // Need to be 1am to avoid timezone issues
+    //format the expiry date to yyyy-mm-dd
+    const expiryDate = `${expiryDateObject.getFullYear()}-${(expiryDateObject.getMonth() + 1).toString().padStart(2, '0')}-${expiryDateObject.getDate().toString().padStart(2, '0')}`;
+
+    return {
+        name,
+        expiryDate
+    }
+}
+
 // UI listeners
 document.getElementById('name').addEventListener('change', () => {
     document.getElementById('expiry-date-text').focus();
 });
 
-document.getElementById('expiry-date-text').addEventListener('change', () => {
-    const name = document.getElementById('name').value;
-    const expiryDateText = document.getElementById('expiry-date-text').value;
-    const [year, month, day] = expiryDateText.split(/年|月|日|號/);
-    const expiryDate = new Date(year, month - 1, day, 1, 0, 0, 0); // Need to be 1am to avoid timezone issues
-    console.log(expiryDate)
-    document.getElementById('expiry-date').valueAsDate = expiryDate;
-    document.getElementById('expiry-date').dispatchEvent(new Event('change'));
+document.getElementById('quick-add').addEventListener('change', () => {
+    const quickAddElement = document.getElementById('quick-add');
+    const newItem = parseQuickAdd(quickAddElement.value);
+    addPantryItem(newItem.name, newItem.expiryDate);
+    render();
+
+    quickAddElement.value = '';
+    quickAddElement.focus();
 });
 
 document.getElementById('expiry-date').addEventListener('change', () => {
@@ -89,7 +104,7 @@ document.getElementById('expiry-date').addEventListener('change', () => {
     addPantryItem(name, expiryDate);
 
     document.getElementById('name').value = '';
-    document.getElementById('expiry-date-text').value = '';
+    document.getElementById('quick-add').value = '';
     document.getElementById('expiry-date').value = '';
 
 

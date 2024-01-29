@@ -81,6 +81,20 @@
                 localStorage.getItem('pantryItems').should.equal('[{"name":"banana","expiryDate":"2024-03-12"},{"name":"apple","expiryDate":"2025-01-01"}]')
             });
         });
+        describe('parseQuickAdd', function() {
+            it('should split the name and date from standard format string with name and date', function() {
+                const parsedItem = parseQuickAdd('蘋果2025年1月1日')
+                parsedItem.should.deep.equal(
+                    {name: '蘋果', expiryDate: '2025-01-01'}
+                )
+            });
+            it('works with only dates', function() {
+                const parsedItem = parseQuickAdd('2025年1月1日')
+                parsedItem.should.deep.equal(
+                    {name: '', expiryDate: '2025-01-01'}
+                )
+            });
+        });
         chai.should();
         mocha.run();
     </script>
