@@ -2,11 +2,19 @@ const pantryList = document.getElementById('pantry-list');
 
 function render(){
     let pantryItems = JSON.parse(localStorage.getItem('pantryItems')) || [];
-    pantryList.innerHTML = '';
+    const originalPantryItems = [...pantryItems]; // Create a copy of the original array
+    // sort the pantryItems by expiry date
     pantryItems.sort((a, b) => {
         return new Date(a.expiryDate) - new Date(b.expiryDate);
     });
 
+    // Compare if the item order changed before and after the sort
+    if (JSON.stringify(pantryItems) !== JSON.stringify(originalPantryItems)) {
+        // save the sorted pantryItems back to localstorage
+        localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
+    }
+
+    pantryList.innerHTML = '';
     pantryItems.forEach(item => {
         const li = document.createElement('li');
 
