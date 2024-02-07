@@ -106,6 +106,45 @@ function parseQuickAdd(text) {
         }
     }
 
+    // Match the text against the regex "<text><chinese number>天", if match, use the number as relative date
+    // Naive implementation, only support 1-20
+    const chineseNumberRegex = /([^\d^十]+)([一二三四五六七八九十]+)天/;
+    const chineseNumberMatch = text.match(chineseNumberRegex);
+    if (chineseNumberMatch) {
+        const name = chineseNumberMatch[1];
+        const chineseNumber = chineseNumberMatch[2];
+        console.log(chineseNumberMatch)
+        const numberMap = {
+            一: 1,
+            二: 2,
+            三: 3,
+            四: 4,
+            五: 5,
+            六: 6,
+            七: 7,
+            八: 8,
+            九: 9,
+            十: 10,
+            十一: 11,
+            十二: 12,
+            十三: 13,
+            十四: 14,
+            十五: 15,
+            十六: 16,
+            十七: 17,
+            十八: 18,
+            十九: 19,
+            二十: 20,
+        }
+        const daysLeft = numberMap[chineseNumber];
+        const expiryDateObject = new Date(new Date().getTime() + daysLeft * 24 * 60 * 60 * 1000);
+        const expiryDate = `${expiryDateObject.getFullYear()}-${(expiryDateObject.getMonth() + 1).toString().padStart(2, '0')}-${expiryDateObject.getDate().toString().padStart(2, '0')}`;
+        return {
+            name,
+            expiryDate
+        }
+    }
+
     // split from the first '2' from the left. Assuming this app will only be used until year 3000
     const name = text.split('2')[0];
     const expiryDateText = '2' + text.split('2').slice(1).join('2');
