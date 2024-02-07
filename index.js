@@ -131,6 +131,21 @@ document.getElementById('quick-add').addEventListener('change', () => {
     // Focuc back to the quickAdd
     quickAddElement.focus();
 });
+// if the quick-add has some text, but still focused, run the change handler after idle for 2 seconds
+// debounce for 3 seconds
+let autoAddTimer = undefined;
+const autoAddTimeout = 3000; // ms
+document.getElementById('quick-add').addEventListener('input', () => {
+    const quickAddElement = document.getElementById('quick-add');
+    if (autoAddTimer) {
+        window.clearTimeout(autoAddTimer);
+    }
+    if (quickAddElement.value.length > 0) {
+        autoAddTimer = window.setTimeout(() => {
+            quickAddElement.dispatchEvent(new Event('change'));
+        }, autoAddTimeout);
+    }
+});
 
 document.getElementById('name').addEventListener('change', () => {
     document.getElementById('expiry-date').focus();
