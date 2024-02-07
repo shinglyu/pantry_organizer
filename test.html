@@ -139,6 +139,13 @@
                 )
             });
         });
+        // add a test for playSound("success"|"fail")
+        describe('playSound', function() {
+            it('should play a sound (smoke test)', function() {
+                playSound('success')
+                playSound('fail')
+             });
+        });
         chai.should();
         mocha.run();
     </script>

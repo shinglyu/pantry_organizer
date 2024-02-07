@@ -53,6 +53,13 @@ function render(highlightIndex) {
     });
 }
 
+function playSound(filename) {
+    const filePath = `static/${filename}.mp3`
+    const audio = new Audio(filePath);
+    audio.play();
+
+}
+
 function addPantryItem(name, expiryDate) {
     const item = {
         name,
@@ -61,7 +68,10 @@ function addPantryItem(name, expiryDate) {
 
     const expiryDateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!expiryDateRegex.test(expiryDate)) {
-        alert(`Expiry date format ${expiryDate} is invalid`);
+        playSound('fail');
+        window.setTimeout(() => {
+            alert(`Expiry date format ${expiryDate} is invalid`);
+        }, 500); // Delay the alert to let the sound play
         return;
     }
 
@@ -71,6 +81,7 @@ function addPantryItem(name, expiryDate) {
         return new Date(a.expiryDate) - new Date(b.expiryDate);
     });
     localStorage.setItem('pantryItems', JSON.stringify(pantryItems));
+    playSound('success');
     return pantryItems.indexOf(item);
 }
 
